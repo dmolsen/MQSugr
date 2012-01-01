@@ -87,8 +87,8 @@ use the default paths that you set-up when you initialized MQSugr by using {cssP
     // loads css2/foo.css and amazing.js w/ the default path if min-width is 720px
     breakpoint: { mq: '720px', lbd: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
-		// loads snow.js w/ the default path if min-width is 720px and cssanimations are supported
-		breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }] }
+    // loads snow.js w/ the default path if min-width is 720px and cssanimations are supported
+    breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }] }
 
 `nope:`, `both:` _(as mboth:)_, & `complete:` are also supported.
 
