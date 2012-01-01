@@ -1,7 +1,9 @@
 # MQSugr #
 
 MQSugr is a wrapper that provides some syntactic sugar for loading CSS and JavaScript files using media queries
-and browser features with `Modernizr.load`. 
+and browser features with `Modernizr.load`. It also uses a file naming convention to help make it easier to 
+view files in a filesystem and know which breakpoint & feature they're related to. You're not required to follow
+the naming convention to use MQSugr.
 
 ## Sugar Isn't Always Good ##
 
@@ -12,7 +14,13 @@ with `Modernizr.load` and `Modernizr.mq`.
 
 ## Features of MQSugr ##
 
-Some list of features...
+List of features:
+
+* Load CSS & JavaScript files based on media queries
+* Simple format that can be expanded on to use the normal Modernerizr.load format
+* Standard file naming convention to help make it easier to organize files based on breakpoints
+* Uses Modernizr to test media queries & features
+* Uses `Modernizr.load` to dynamically load files
 
 ## Using MQSugr ##
 
@@ -54,7 +62,7 @@ These defaults can be overridden by simply including the new values in the call 
 
 ### Creating Breakpoints ###
 
-Breakpoints and the resulting tests are the core of MQSugr. The following are examples of how you could use
+Breakpoints and their related tests are the core of MQSugr. The following are examples of how you could use
 them to load specific files:
 
     // loads 720.css if min-width is 720px
@@ -79,6 +87,17 @@ them to load specific files:
 		
     // loads 720.cssanimations.js for devices w/ max-width of 720px					
     breakpoint: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', mm: 'max' }]} 
+
+If you need to load files across multiple breakpoints just use `min-width` & `max-width` to load them
+across the appropriate breakpoints. For example, by default MQSugr uses `min-width` & we want the
+`720.cssanimations.js` file to load for any window greater than 720px:
+
+    breakpoint1: { mq: '720px', js: 'cssanimations' },
+    breakpoint2: '1024px'
+
+This will only load `720.css` & `720.cssanimations.js` if the width of the window is greater than 720px but
+less than 1024px. It will load `1024.css`, `720.css` & `720.cssanimations.js` if the width of the window
+is greater than 1024px.
 		
 Obviously the previous examples use the file naming convention. If you don't want to rely on that you 
 can use `Modernizr.load`'s default behavior to load files. The one trick is that you can still 
