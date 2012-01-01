@@ -30,23 +30,23 @@ Initialize MQSugr and starting the check for breakpoints to load files is really
 following before the closing `/body` tag:
 
     <script type="text/javascript">
-			var mqsugr = new MQSugr();			
-			var breakpoints = { 
-				breakpoint1: { mq: '600px', tests: 'cssanimations' },
-				breakpoint2: { mq: '1025px', tests: 'draganddrop' }
-			};
-			mqsugr.check(breakpoints);
-		</script>
+       var mqsugr = new MQSugr();			
+       var breakpoints = { 
+           breakpoint1: { mq: '600px', tests: 'cssanimations' },
+           breakpoint2: { mq: '1025px', tests: 'draganddrop' }
+       };
+       mqsugr.check(breakpoints);
+    </script>
 
 ### Changing Default Options for MQSugr ###
 
 The following options are set-up by default to be used when creating media queries and file paths:
 
-		cssPath	= 'css/';   // the default path to the css files
-		jsPath  = 'js/';    // the default path to the js files
-		mm      = 'min';    // the default value for min-width vs max-width
-		mt      = 'screen'; // the default value for media type for the media queries (e.g. screen)
-		lbd		  = 'css';    // the default files that should be loaded _(can be css, js, both, or none)_
+    cssPath	= 'css/';   // the default path to the css files
+    jsPath  = 'js/';    // the default path to the js files
+    mm      = 'min';    // the default value for min-width vs max-width
+    mt      = 'screen'; // the default value for media type for the media queries (e.g. screen)
+    lbd     = 'css';    // the default files that should be loaded (can be css, js, both, or none)
 
 These defaults can be overridden by simply including the new values in the call to initialize MQSugr like so:
 
@@ -63,22 +63,22 @@ them to load specific files:
     // loads 720.css & 720.js if min-width is 720px
     breakpoint: { mq: '720px', lbd: 'both' }
 
-   	// loads 720.css, 720.cssanimations.css if min-width is 720px
-		breakpoint: { mq: '720px', tests: 'cssanimations' }
+    // loads 720.css, 720.cssanimations.css if min-width is 720px
+    breakpoint: { mq: '720px', tests: 'cssanimations' }
 		
-		// loads 720.css, 720.cssanimations.css, 720.borderradius.css if min-width is 720px
-		// each feature, cssanimations & borderradius, are tested individually w/ the media query
-		breakpoint: { mq: '720px', tests: 'cssanimations,borderradius' }
+    // loads 720.css, 720.cssanimations.css, 720.borderradius.css if min-width is 720px
+    // each feature, cssanimations & borderradius, are tested individually w/ the media query
+    breakpoint: { mq: '720px', tests: 'cssanimations,borderradius' }
 		
-		// loads 720.css, 720.cssanimations-borderradius.css if min-width is 720px
-		// both features must exist with the media query to be loaded, || also works
-		breakpoint: { mq: '720px', tests: 'cssanimations && borderradius' }
+    // loads 720.css, 720.cssanimations-borderradius.css if min-width is 720px
+    // both features must exist with the media query to be loaded, || also works
+    breakpoint: { mq: '720px', tests: 'cssanimations && borderradius' }
 		
-		// loads 720.css, 720.cssanimations.js if min-width is 720px
-		breakpoint: { mq: '720px', js: 'cssanimations' }
+    // loads 720.css, 720.cssanimations.js if min-width is 720px
+    breakpoint: { mq: '720px', js: 'cssanimations' }
 		
-		// loads 720.cssanimations.js for devices w/ max-width of 720px					
-		breakpoint: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', mm: 'max' }]} 
+    // loads 720.cssanimations.js for devices w/ max-width of 720px					
+    breakpoint: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', mm: 'max' }]} 
 		
 Obviously the previous examples use the file naming convention. If you don't want to rely on that you 
 can use `Modernizr.load`'s default behavior to load files. The one trick is that you can still 
@@ -97,18 +97,18 @@ use the default paths that you set-up when you initialized MQSugr by using {cssP
 In case you're curious here are some breakpoints that you might want to keep in mind. They were
 provided by [@ryanve](http://stackoverflow.com/users/770127/ryanve) on [Stack Overflow](http://stackoverflow.com/a/7354648):
 
-   /* regular breakpoints
-   min-width: 320px  // smartphones, portrait iPhone, portrait 480x320 phones (Android)
-   min-width: 480px  // smartphones, Android phones, landscape iPhone
-   min-width: 600px  // portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android)
-   min-width: 801px  // tablet, landscape iPad, lo-res laptops ands desktops
-   min-width: 1025px // big landscape tablets, laptops, and desktops
-   min-width: 1281px // hi-res laptops and desktops
+    /* regular breakpoints
+    min-width: 320px  // smartphones, portrait iPhone, portrait 480x320 phones (Android)
+    min-width: 480px  // smartphones, Android phones, landscape iPhone
+    min-width: 600px  // portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android)
+    min-width: 801px  // tablet, landscape iPad, lo-res laptops ands desktops
+    min-width: 1025px // big landscape tablets, laptops, and desktops
+    min-width: 1281px // hi-res laptops and desktops
 
-   /* 960 grid systems
-   min-width: 320px  // smartphones, iPhone, portrait 480x320 phones
-   min-width: 481px  // portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide.
-   min-width: 641px  // portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 and 854x480 phones
-   min-width: 961px  // tablet, landscape iPad, lo-res laptops ands desktops
-   min-width: 1025px // big landscape tablets, laptops, and desktops
-   min-width: 1281px // hi-res laptops and desktops
+    /* 960 grid systems
+    min-width: 320px  // smartphones, iPhone, portrait 480x320 phones
+    min-width: 481px  // portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide.
+    min-width: 641px  // portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 and 854x480 phones
+    min-width: 961px  // tablet, landscape iPad, lo-res laptops ands desktops
+    min-width: 1025px // big landscape tablets, laptops, and desktops
+    min-width: 1281px // hi-res laptops and desktops
