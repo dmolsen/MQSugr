@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 	<head>
-		<title>MQLoader</title>
+		<title>MQSugr</title>
 
 		<script src="js/modernizr-2.0.6.wload.min.js"></script>
 		<script src="js/ready.min.js"></script>
-		<script src="js/mqloader.js"></script>
+		<script src="js/mqsugr.js"></script>
 	</head>
 
 	<body id="index" >
@@ -12,7 +12,7 @@
 		<div>Simply a test holder at the moment</div>
 
 		<script type="text/javascript">
-			var mqloader = new MQLoader();
+			var mqsugr = new MQSugr({ lbd: 'none' });
 			
 			/*
 				# loads 720.css
@@ -20,18 +20,24 @@
 
 				# loads 720.css, 720.js
 				breakpoint2: { mq: '720px', load: 'both' }	
+				
+				# shouldn't load anything
+				breakpoint2: { mq: '720px', load: 'none' }
 
+				# loads css2/foo.css and amazing.js w/ the default path
+				breakpoint7: { mq: '720px', load: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+				
 				# loads 720.css, 720.js, 720.animations.css, 720.animations.js
 				breakpoint7: { mq: '720px', load: 'both', tests: 'cssanimations' }
 
-				# loads css2/foo.css and amazing.js w/ the default path FAILS
-				breakpoint7: { mq: '720px', load: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] }
-
-				# ??? FAILS
-				breakpoint7: { mq: '720px', load: 'none', tests: 'cssanimations', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+				# 'tests' def. WON'T work, test below goes false as expected on safari
+				breakpoint7: { mq: '720px', load: 'none', test: 'indexeddb', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
 				# loads 720.css, 720.cssanimations.css, 720.borderradius.css					
-				breakpoint3: { mq: '720px', tests: 'cssanimations, borderradius' }	
+				breakpoint3: { mq: '720px', tests: 'cssanimations, borderradius' }
+				
+				# loads 720.css, 720.cssanimations-draganddrop.css, 720.borderradius.css (???)
+				breakpoint3: { mq: '720px', tests: 'cssanimations && draganddrop, borderradius' }		
 
 				# loads 720.css, 720.cssanimations.js	
 				breakpoint4: { mq: '720px', js: 'cssanimations' }	
@@ -43,7 +49,7 @@
 				breakpoint6: { mq: '720px', load: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }]}
 			*/
 			
-			var breakpoints = { 	breakpoint6: { mq: '720px', load: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }]}  };
+			var breakpoints = { breakpoint2: { mq: '720px', test: 'cssanimations', yep: ['css2/foo.css','{jsPath}amazing.js'] } };
 			
 			console.log(window.innerWidth);
 			
