@@ -8,9 +8,10 @@ the naming convention to use MQSugr.
 ## Sugar Isn't Always Good for You ##
 
 `Modernizr.load` already does a good job of using media queries for loading files. MQSugr was created to help me
-learn more about Modernizr, media queries, and JavaScript. While I think I could have used this for organizing
+learn more about Modernizr, media queries, file loading and JavaScript. While I think I could have used this for organizing
 files and properly loading JavaScript for a recent project it's a bit much (4K) for such a really simple task
-with `Modernizr.load` and `Modernizr.mq`.
+that can already be done with `Modernizr.load` and `Modernizr.mq`. This is also a _brittle_ solution because I may or 
+may not keep up with all the feature of `Modernizr.load`. More than likely I won't.
 
 ## Features of MQSugr ##
 
