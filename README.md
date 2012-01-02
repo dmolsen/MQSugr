@@ -5,7 +5,7 @@ and browser features with `Modernizr.load`. It also uses a file naming conventio
 view files in a filesystem and know which breakpoint & feature they're related to. You're not required to follow
 the naming convention to use MQSugr.
 
-## Sugar Isn't Always Good ##
+## Sugar Isn't Always Good for You ##
 
 `Modernizr.load` already does a good job of using media queries for loading files. MQSugr was created to help me
 learn more about Modernizr, media queries, and JavaScript. While I think I could have used this for organizing
@@ -17,7 +17,7 @@ with `Modernizr.load` and `Modernizr.mq`.
 List of features:
 
 * Load CSS & JavaScript files based on media queries
-* Simple format that can be expanded on to use the normal Modernerizr.load format
+* Simple format that can be expanded upon to use the normal Modernerizr.load format
 * Standard file naming convention to help make it easier to organize files based on breakpoints
 * Uses Modernizr to test media queries & features
 * Uses `Modernizr.load` to dynamically load files
