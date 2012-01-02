@@ -1,6 +1,8 @@
 Simple tests for making sure certain features are working. I need to come up
 with a real test suite.
 
+### BUG with yep/no and using 'test' instead of 'tests'
+
 # loads 720.css
 breakpoint1: '720px'
 
@@ -10,10 +12,20 @@ breakpoint2: { mq: '720px', lbd: 'both' }
 # shouldn't load anything
 breakpoint2: { mq: '720px', lbd: 'none' }
 
+# need to figure out what this test really does
+# do user supplied 'yeps' get file paths replaced no matter what?, should i also load 720.css?
+# currently fails hardcore
+breakpoint7: { mq: '720px', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+
+# another test that fails hard core
+# breaks on the []s in the yep and uses the yep even though indexeddb should fail
+breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['{jsPath}snow.js]'], mboth: ['{jsPath}amazing.js'] }
+
 # loads css2/foo.css and amazing.js w/ the default path
 breakpoint7: { mq: '720px', lbd: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
 # loads 720.css, 720.js, 720.animations.css, 720.animations.js
+# takes a long time to load cssanimations though...
 breakpoint7: { mq: '720px', lbd: 'both', tests: 'cssanimations' }
 
 # 'tests' def. WON'T work, test below goes false as expected on safari
@@ -35,9 +47,12 @@ breakpoint5: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', mm: 'max'
 breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }]}
 
 # need a nope test
+breakpoint7: { mq: '720px', lbd: 'none', test: 'indexeddb', nope: '{jsPath}amazing.js'] }
 
 # need an mboth test
+breakpoint7: { mq: '720px', lbd: 'none', test: 'indexeddb', yep: '[{jsPath}snow.js]', mboth: ['{jsPath}amazing.js'] }
 
 # need a complete test
+breakpoint7: { mq: '720px', complete: function() { console.log('finished loading stuff')} }
 
 # check test vs tests

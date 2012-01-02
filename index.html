@@ -12,11 +12,42 @@
 		<div id="mq600"></div>
 		<div id="mq800"></div>
 
+		
 		<script type="text/javascript">
 			var mqsugr = new MQSugr();			
-			var breakpoints = { breakpoint: { mq: '720px', test: 'cssanimations', yep: ['css2/foo.css','{jsPath}amazing.js'] } };
+			var breakpoints = { 
+													//breakpoint2: { mq: '720px', lbd: 'both' },
+													breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['{jsPath}snow.js]'], mboth: ['{jsPath}amazing.js'] }
+													//breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }]}
+												};
 			mqsugr.check(breakpoints);
 		</script>
-
+		
+		
+		<!--
+		<script type="text/javascript">
+		 function sortByType(a,b) { 
+				var av = (a.ft == 'css') ? 2 : 1;
+				var bv = (b.ft == 'css') ? 2 : 1;
+				return av - bv;
+			}
+			
+			var breakpoints1 = [
+													{ test: true, yep: "js/720.js", ft: 'js' },
+													{ test: true, yep: "css/720.cssanimations.css", ft: 'css' },
+													{ test: true, yep: "js/720.cssanimations.js", ft: 'js' }
+												];
+			var breakpoints2 = [		
+													{ test: true, yep: "css/720.css", ft: 'css' },
+													{ test: true, yep: "js/720.borderradius.js", ft: 'js' },
+													{ test: true, yep: "css/720.borderradius.css", ft: 'css' }
+												];
+			breakpoints1 = breakpoints1.concat(breakpoints2);
+			breakpoints1.sort(sortByType);
+			console.debug(breakpoints1);
+			Modernizr.load(breakpoints1);
+		</script>
+		-->
 	</body>
 </html>
+
