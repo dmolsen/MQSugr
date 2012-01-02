@@ -18,7 +18,7 @@ function MQSugr(options) {
 	this.jsPath		= 'js/';
 	this.mm			= 'min';
 	this.mt			= 'screen';
-	this.lbd		= 'css';
+	this.lbd		= 'js';
 	
 	if (options) {
 		if (options.cssPath)
@@ -154,7 +154,7 @@ MQSugr.prototype.createMTestObject = function(options) {
 	var mq 			= options.mq;
 	var cssPath 	= (options.cssPath) ? options.cssPath : this.cssPath;
 	var jsPath 		= (options.jsPath) ? options.jsPath : this.jsPath;
-	var ft			= (options.ft) ? options.ft : 'css';
+	var ft			= (options.ft) ? options.ft : 'js'; // i think this is unnecessary now...
 	var mm 			= (options.mm) ? options.mm : this.mm;
 	var mt 			= (options.mt) ? options.mt : this.mt;
 	var fileTest	= (options.test) ? '.'+options.test.replace(/\ \|\|\ /,'-').replace(/\ \&\&\ /,'-') : ''; // replace ' || ' & ' && ' w/ '-' in the test string
@@ -184,6 +184,7 @@ MQSugr.prototype.createMTestObject = function(options) {
 		MTestObject.test = MTestObject.test && Modernizr.mq('only '+mt+' and (-webkit-min-device-pixel-ratio: 1.5), only '+mt+' and (-o-min-device-pixel-ratio: 3/2), only '+mt+' and (min-device-pixel-ratio: 1.5)');
 	}
 	
+	console.debug(options);
 	// yep - create the list of files to load, if the default files aren't being loaded still check for the yep: feature
 	// '_lbd = none' tells us we came from a breakUpYepNope(), yes, it feels hack-ish but i'm getting tired of this
 	if (options._lbd == 'none') {
@@ -236,7 +237,7 @@ MQSugr.prototype.createMTestObject = function(options) {
 	}
 
 	// ft - provide a file type so that we can sort by file type before loading
-	MTestObject.ft = (options.ft == 'css') ? 'css' : 'js';
+	MTestObject.ft = (options.ft == 'js') ? 'js' : 'css';
 	
 	return MTestObject;
 }
@@ -297,13 +298,14 @@ MQSugr.prototype.createMLoadObject = function(options) {
 				MLoadObject.push(this.createMTestObject(options));
 			options.ft = 'js';
 				MLoadObject.push(this.createMTestObject(options));
-		} else if (lbd == 'js') {
-			options.ft = 'js';
+		} else if (lbd == 'css') {
+			options.ft = 'css';
 				MLoadObject.push(this.createMTestObject(options));
 		} else if (lbd == 'none') {
 			// don't do anything
 		} else {
-			MLoadObject.push(this.createMTestObject(options));
+			options.ft = 'js';
+				MLoadObject.push(this.createMTestObject(options));
 		}
 		
 		// tests - see which files should be loaded for the provided mq & tests
@@ -313,21 +315,15 @@ MQSugr.prototype.createMLoadObject = function(options) {
 					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
 				options.ft = 'js';
 					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
-			} else if (lbd == 'js') {
-				options.ft = 'js';
+			} else if (lbd == 'css') {
+				options.ft = 'css';
 					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
 			} else if (lbd == 'none') {
 				// don't do anything, no idea why you'd provide tests and go none
 			} else {
-				options.ft = 'css';
+				options.ft = 'js';
 					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
 			}
-		}
-		
-		// js - see which files should be loaded for the provided type
-		if (options.js) {
-			options.ft = 'js';
-				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.js));
 		}
 		
 		// css - see which files should be loaded for the provided type
@@ -336,6 +332,12 @@ MQSugr.prototype.createMLoadObject = function(options) {
 				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.css));
 		}
 		
+		// js - see which files should be loaded for the provided type
+		if (options.js) {
+			options.ft = 'js';
+				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.js));
+		}
+
 		// both - see which files should be loaded for the provided type
 		if (options.both) {
 			options.ft = 'css';
