@@ -168,13 +168,14 @@ MQSugr.prototype.createMTestObject = function(options) {
 	}
 	
 	// yep - create the list of files to load, if the default files aren't being loaded still check for the yep: feature
+	// '_lbd = none' tells us we came from a breakUpYepNope(), yes, it feels hack-ish but i'm getting tired of this
 	if (options._lbd == 'none') {
-		options.yep 	= this.createYepNopePath(options.yep,mq,fileTest,jsPath,'js');
-		MTestObject.yep = this.createYepNopePath(options.yep,mq,fileTest,cssPath,'css');
+		var filePath    = (ft == 'js') ? jsPath : cssPath; 
+		MTestObject.yep = this.createYepNopePath(options.yep,mq,fileTest,filePath,ft);
 	} else if (ft == 'js') {
-		MTestObject.yep = this.createYepNopePath(options.yep,mq,fileTest,jsPath,'js');
+		MTestObject.yep = this.createYepNopePath(false,mq,fileTest,jsPath,'js');
 	} else {
-		MTestObject.yep = this.createYepNopePath(options.yep,mq,fileTest,cssPath,'css');
+		MTestObject.yep = this.createYepNopePath(false,mq,fileTest,cssPath,'css');
 	}
 	
 	// nope - create the list of files to load, if the default files aren't being loaded still check for the nope: feature
@@ -183,9 +184,9 @@ MQSugr.prototype.createMTestObject = function(options) {
 			options.nope 	 = this.createYepNopePath(options.nope,mq,fileTest,jsPath,'js');
 			MTestObject.nope = this.createYepNopePath(options.nope,mq,fileTest,cssPath,'css');
 		} else if (ft == 'js') {
-			MTestObject.nope = this.createYepNopePath(options.nope,mq,fileTest,jsPath,'js');
+			MTestObject.nope = this.createYepNopePath(false,mq,fileTest,jsPath,'js');
 		} else {
-			MTestObject.nope = this.createYepNopePath(options.nope,mq,fileTest,cssPath,'css');
+			MTestObject.nope = this.createYepNopePath(false.nope,mq,fileTest,cssPath,'css');
 		}
 	}
 
@@ -195,9 +196,9 @@ MQSugr.prototype.createMTestObject = function(options) {
 			options.mboth 	 = this.createYepNopePath(options.mboth,mq,fileTest,jsPath,'js');
 			MTestObject.both = this.createYepNopePath(options.mboth,mq,fileTest,cssPath,'css');
 		} else if (ft == 'js') {
-			MTestObject.both = this.createYepNopePath(options.mboth,mq,fileTest,jsPath,'js');
+			MTestObject.both = this.createYepNopePath(false.mboth,mq,fileTest,jsPath,'js');
 		} else {
-			MTestObject.both = this.createYepNopePath(options.mboth,mq,fileTest,cssPath,'css');
+			MTestObject.both = this.createYepNopePath(false.mboth,mq,fileTest,cssPath,'css');
 		}
 	}
 	
@@ -300,29 +301,6 @@ MQSugr.prototype.createMLoadObject = function(options) {
 			}
 		}
 		
-		// if defaults aren't loaded but yep, nope, or both are available create the default test for them
-		/*
-		if ((lbd == 'none') && (options.yep || options.nope || options.mboth)) {
-			options._lbd = 'none';
-			MLoadObject.push(this.createMTestObject(options));
-			options._lbd = '';
-		}*/
-		
-		// yep - create tests for each file in a default yep: statement
-		if (options.yep) {
-			MLoadObject = this.breakUpYepNope(options,MLoadObject);
-		}
-		
-		// nope - create tests for each file in a default nope: statement
-		if (options.nope) {
-			MLoadObject = this.breakUpYepNope(options,MLoadObject);
-		}
-		
-		// both - create tests for each file in a default both: statement
-		if (options.mboth) {
-			MLoadObject = this.breakUpYepNope(options,MLoadObject);
-		}
-		
 		// js - see which files should be loaded for the provided type
 		if (options.js) {
 			options.ft = 'js';
@@ -341,6 +319,21 @@ MQSugr.prototype.createMLoadObject = function(options) {
 				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.both));
 			options.ft = 'js';
 				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.both));
+		}
+		
+		// yep - create tests for each file in a default yep: statement
+		if (options.yep) {
+			MLoadObject = this.breakUpYepNope(options,MLoadObject);
+		}
+		
+		// nope - create tests for each file in a default nope: statement
+		if (options.nope) {
+			MLoadObject = this.breakUpYepNope(options,MLoadObject);
+		}
+		
+		// mboth - create tests for each file in a default both: statement
+		if (options.mboth) {
+			MLoadObject = this.breakUpYepNope(options,MLoadObject);
 		}
 		
 	}
