@@ -8,10 +8,12 @@ the naming convention to use MQSugr.
 ## Sugar Isn't Always Good for You ##
 
 `Modernizr.load` already does a good job of using media queries for loading files. MQSugr was created to help me
-learn more about Modernizr, media queries, file loading and JavaScript. While I think I could have used this for organizing
-files and properly loading JavaScript for a recent project it's a bit much (4K) for such a really simple task
-that can already be done with `Modernizr.load` and `Modernizr.mq`. This is also a _brittle_ solution because I may or 
-may not keep up with all the feature of `Modernizr.load`. More than likely I won't.
+learn more about Modernizr, media queries, file loading and JavaScript. Some reasons why this little project
+might not be a good fit for you:
+
+* at 4K minified it's very heavy for something that might be easier to type out by hand
+* it's a _brittle_ solution because I may or may not keep up with all the features of `Modernizr.load`. let's go under assumption I won't.
+* if you use this to load CSS files you may experience FOUC. this is because JS gets loaded before CSS for performance reasons.
 
 ## Features of MQSugr ##
 
@@ -55,7 +57,7 @@ The following options are set-up by default to be used when creating media queri
     jsPath  = 'js/';    // the default path to the js files
     mm      = 'min';    // the default value for min-width vs max-width
     mt      = 'screen'; // the default value for media type for the media queries (e.g. screen)
-    lbd     = 'css';    // the default files that should be loaded (can be css, js, both, or none)
+    lbd     = 'js';    // the default files that should be loaded (can be css, js, both, or none)
 
 These defaults can be overridden by simply including the new values in the call to initialize MQSugr like so:
 
@@ -66,25 +68,25 @@ These defaults can be overridden by simply including the new values in the call 
 Breakpoints and their related tests are the core of MQSugr. The following are examples of how you could use
 them to load specific files:
 
-    // loads 720.css if min-width is 720px
+    // loads 720.js if min-width is 720px
     breakpoint: '720px' 
 
-    // loads 720.css & 720.js if min-width is 720px
+    // loads 720.js & 720.css if min-width is 720px
     breakpoint: { mq: '720px', lbd: 'both' }
 
-    // loads 720.css, 720.cssanimations.css if min-width is 720px
+    // loads 720.js, 720.cssanimations.js if min-width is 720px
     breakpoint: { mq: '720px', tests: 'cssanimations' }
 		
-    // loads 720.css, 720.cssanimations.css, 720.borderradius.css if min-width is 720px
+    // loads 720.js, 720.cssanimations.js, 720.borderradius.js if min-width is 720px
     // each feature, cssanimations & borderradius, are tested individually w/ the media query
     breakpoint: { mq: '720px', tests: 'cssanimations,borderradius' }
 		
-    // loads 720.css, 720.cssanimations-borderradius.css if min-width is 720px
+    // loads 720.js, 720.cssanimations-borderradius.js if min-width is 720px
     // both features must exist with the media query to be loaded, || also works
     breakpoint: { mq: '720px', tests: 'cssanimations && borderradius' }
 		
-    // loads 720.css, 720.cssanimations.js if min-width is 720px
-    breakpoint: { mq: '720px', js: 'cssanimations' }
+    // loads 720.js, 720.cssanimations.css if min-width is 720px
+    breakpoint: { mq: '720px', css: 'cssanimations' }
 		
     // loads 720.cssanimations.js for devices w/ max-width of 720px					
     breakpoint: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', mm: 'max' }]} 
@@ -96,8 +98,8 @@ across the appropriate breakpoints. For example, by default MQSugr uses `min-wid
     breakpoint1: { mq: '720px', js: 'cssanimations' },
     breakpoint2: '1024px'
 
-This will only load `720.css` & `720.cssanimations.js` if the width of the window is greater than 720px but
-less than 1024px. It will load `1024.css`, `720.css` & `720.cssanimations.js` if the width of the window
+This will only load `720.js` & `720.cssanimations.js` if the width of the window is greater than 720px but
+less than 1024px. It will load `1024.js`, `720.js` & `720.cssanimations.js` if the width of the window
 is greater than 1024px.
 		
 Obviously the previous examples use the file naming convention. If you don't want to rely on that you 
@@ -108,9 +110,9 @@ use the default paths that you set-up when you initialized MQSugr by using {cssP
     breakpoint: { mq: '720px', lbd: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
     // loads snow.js w/ the default path if min-width is 720px and cssanimations are supported
-    breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }] }
+    breakpoint: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }] }
 
-`nope:`, `both:` _(as mboth:)_, & `complete:` are also supported.
+`nope:`, `both:` _(as mboth:)_, `callback:` & `complete:` are also supported.
 
 ### Suggested Breakpoints ###
 
