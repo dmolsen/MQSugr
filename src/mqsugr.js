@@ -14,11 +14,11 @@
 * @param options.lbd        the default files that should be loaded (e.g. css, js, both, none)
 */
 function MQSugr(options) {
-	this.cssPath	= 'css/';
-	this.jsPath		= 'js/';
-	this.mm			= 'min';
-	this.mt			= 'screen';
-	this.lbd		= 'css';
+	this.cssPath    = 'css/';
+	this.jsPath     = 'js/';
+	this.mm         = 'min';
+	this.mt         = 'screen';
+	this.lbd        = 'css';
 	
 	if (options) {
 		if (options.cssPath)
@@ -35,6 +35,11 @@ function MQSugr(options) {
 	
 	this.trackComplete = []; // to keep track of functions someone may submit via complete:
 	this.trackCallback = []; // to keep track of callbacks someone may submit via callback:
+	this.trackLoaded   = []; // to keep track of tests that were loaded. for resize purposes.
+	
+	// make sure that if a user resizes the window the tests are run again. note: ONLY runs when someone makes the screen LARGER
+	this.startX = window.innerWidth;
+	window.onresize = function() { mqsugr.check(breakpoints) }; // make sure i
 }
 
 /**
@@ -62,7 +67,18 @@ MQSugr.prototype.mergeOptions = function(obj1,obj2) {
 }
 
 /**
-* Sorts the final list of breakpoint tests so that JS is loaded before CSS. addresses a Modernizr.load issue.
+* Sorts the final list of breakpoint tests by name so more general CSS is, hopefully, loaded before the more specific CSS
+* @param  {Object}   a      first object to compare
+* @param  {Object}   b      second object to compare
+*
+* @return {Integer}         the combined object
+*/
+MQSugr.prototype.sortByName = function(a,b) { 
+	return a.filePath.length - b.filePath.length;
+}
+
+/**
+* Sorts the final list of breakpoint tests so that JS is loaded before CSS. addresses a (perceived) Modernizr.load issue.
 * @param  {Object}   a      first object to compare
 * @param  {Object}   b      second object to compare
 *
@@ -120,6 +136,26 @@ MQSugr.prototype.clone = function(obj) {
 }
 
 /**
+* Cleans the final array before loading files. This way onResize doesn't cause the same file to load over & over
+* @param  {Array}    array    the final array of tests to be cleaned up
+*
+* @return {Array}             the cleaned array
+*/
+MQSugr.prototype.clean = function(array) {
+	_array = this.clone(array); // not sure this is really necessary
+	for (item in _array) {
+		if (_array[item].test) {
+			if (!this.inArray(_array[item].filePath,this.trackLoaded)) {
+				this.trackLoaded.push(_array[item].filePath);
+			} else {
+				_array[item].test = false; // force the test to false so Modernizr.load doesn't run it
+			}
+		}
+	}
+	return _array;
+}
+
+/**
 * Creates the yep:, nope:, or both: file path property for the Modernizr.load test
 * @param  {String}   yepnope   the yep:, nope:, or both: properties if available
 * @param  {String}   mq        media query to be used for the name of a default file
@@ -138,42 +174,6 @@ MQSugr.prototype.createYepNopePath = function(yepnope,mq,fileTest,filePath,type)
 		yepnopePath = filePath+mq.replace(/px$/,'')+fileTest+'.'+type;
 	}
 	return yepnopePath;
-}
-
-/**
-* Breaks apart standard yep:, nope:, & both: requests so we can properly organize JS vs CSS files
-* @param  {Object}   ynbOptions   the overall options for this test
-*
-* @return {Array}                the updated array
-*/
-MQSugr.prototype.breakUpYepNope = function(ynbOptions) {
-	var MLoadObject = [];
-	var ynbTypes = ['yep','nope','mboth'];
-	for (ynbType in ynbTypes) {
-		if (ynbOptions[ynbTypes[ynbType]]) {
-			var ynbFiles = ynbOptions[ynbTypes[ynbType]];
-			var _ynbOptions = this.clone(ynbOptions);
-			_ynbOptions._lbd = 'none';
-			for (_ynbType in ynbTypes) {
-				if (ynbTypes[ynbType].toString() != ynbTypes[_ynbType].toString()) {
-					if (_ynbOptions[ynbTypes[_ynbType]])
-						delete _ynbOptions[ynbTypes[_ynbType]];
-				}
-			}
-			if (typeof ynbFiles == 'string') {
-				_ynbOptions.ft = (ynbFiles.match(/js$/)) ? 'js' : 'css';
-				MLoadObject = MLoadObject.concat(this.breakUpTests(_ynbOptions, _ynbOptions.tests));	
-			} else {
-				for (path in ynbFiles) {
-					_ynbOptions[ynbTypes[ynbType]] = ynbFiles[path];
-					_ynbOptions.ft = (ynbFiles[path].match(/js$/)) ? 'js' : 'css';
-					MLoadObject = MLoadObject.concat(this.breakUpTests(_ynbOptions, _ynbOptions.tests));
-				}
-			}
-			_ynbOptions._lbd = '';
-		}
-	}
-	return MLoadObject;
 }
 
 /**
@@ -239,11 +239,13 @@ MQSugr.prototype.createMTestObject = function(options) {
 		for (ynType in ynTypes) {
 			var _ynType = (ynTypes[ynType] == 'mboth') ? 'both' : ynTypes[ynType];
 			if (options[ynTypes[ynType]]) {
-				MTestObject[_ynType] = this.createYepNopePath(options[ynTypes[ynType]],mq,fileTest,filePath,ft);			
+				MTestObject[_ynType] = this.createYepNopePath(options[ynTypes[ynType]],mq,fileTest,filePath,ft);
+				MTestObject.filePath = MTestObject[_ynType];
 			}
 		}
 	} else {
 		MTestObject['yep'] = this.createYepNopePath(false,mq,fileTest,filePath,ft);
+		MTestObject.filePath = MTestObject['yep'];
 	}
 
 	// callback - after loading a file make sure we support callback:, also make sure that the function selected only loads once
@@ -266,6 +268,42 @@ MQSugr.prototype.createMTestObject = function(options) {
 	MTestObject.ft = (options.ft == 'js') ? 'js' : 'css';
 	
 	return MTestObject;
+}
+
+/**
+* Breaks apart standard yep:, nope:, & both: requests so we can properly organize JS vs CSS files
+* @param  {Object}   ynbOptions   the overall options for this test
+*
+* @return {Array}                the updated array
+*/
+MQSugr.prototype.breakUpYepNope = function(ynbOptions) {
+	var MLoadObject = [];
+	var ynbTypes = ['yep','nope','mboth'];
+	for (ynbType in ynbTypes) {
+		if (ynbOptions[ynbTypes[ynbType]]) {
+			var ynbFiles = ynbOptions[ynbTypes[ynbType]];
+			var _ynbOptions = this.clone(ynbOptions);
+			_ynbOptions._lbd = 'none';
+			for (_ynbType in ynbTypes) {
+				if (ynbTypes[ynbType].toString() != ynbTypes[_ynbType].toString()) {
+					if (_ynbOptions[ynbTypes[_ynbType]])
+						delete _ynbOptions[ynbTypes[_ynbType]];
+				}
+			}
+			if (typeof ynbFiles == 'string') {
+				_ynbOptions.ft = (ynbFiles.match(/js$/)) ? 'js' : 'css';
+				MLoadObject = MLoadObject.concat(this.breakUpTests(_ynbOptions, _ynbOptions.tests));	
+			} else {
+				for (path in ynbFiles) {
+					_ynbOptions[ynbTypes[ynbType]] = ynbFiles[path];
+					_ynbOptions.ft = (ynbFiles[path].match(/js$/)) ? 'js' : 'css';
+					MLoadObject = MLoadObject.concat(this.breakUpTests(_ynbOptions, _ynbOptions.tests));
+				}
+			}
+			_ynbOptions._lbd = '';
+		}
+	}
+	return MLoadObject;
 }
 
 /**
@@ -408,11 +446,16 @@ MQSugr.prototype.createMLoadObject = function(options) {
 * @param  MQbreakpoints     the full list of breakpoints and options that should be tested
 */
 MQSugr.prototype.check = function(MQbreakpoints) {
-	var MQbreakpointArray = [];	
-	for (MQbreakpoint in MQbreakpoints) {
-		MQbreakpointArray = MQbreakpointArray.concat(this.createMLoadObject(MQbreakpoints[MQbreakpoint]));
-	}
-	MQbreakpointArray.sort(this.sortByType); // making sure the JS is loaded before the CSS
-	console.log(MQbreakpointArray);
-	Modernizr.load(MQbreakpointArray);
+	var x = window.innerWidth;
+	if (x >= this.startX) {
+		this.startX = x;
+		var MQbreakpointArray = [];	
+		for (MQbreakpoint in MQbreakpoints) {
+			MQbreakpointArray = MQbreakpointArray.concat(this.createMLoadObject(MQbreakpoints[MQbreakpoint]));
+		}
+		MQbreakpointArray.sort(this.sortByName); // making sure the files are in order of specificity (hopefully)
+		MQbreakpointArray.sort(this.sortByType); // making sure the JS is loaded before the CSS
+		MQbreakpointArray = this.clean(MQbreakpointArray); // turn the test to false if the file has already been loaded
+		Modernizr.load(MQbreakpointArray);
+	}	
 }
