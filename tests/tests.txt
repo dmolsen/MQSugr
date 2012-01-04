@@ -15,21 +15,21 @@ breakpoint2: { mq: '720px', lbd: 'none' }
 # need to figure out what this test really does
 # do user supplied 'yeps' get file paths replaced no matter what?, should i also load 720.css?
 # currently fails hardcore
-breakpoint7: { mq: '720px', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+breakpoint7: { mq: '720px', yep: ['css2/foo.css','{jsPath}amazing.js'] } //FAIL
 
 # another test that fails hard core
 # breaks on the []s in the yep and uses the yep even though indexeddb should fail
 breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['{jsPath}snow.js]'], mboth: ['{jsPath}amazing.js'] }
 
 # loads css2/foo.css and amazing.js w/ the default path
-breakpoint7: { mq: '720px', lbd: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+breakpoint7: { mq: '720px', lbd: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] //FAIL
 
 # loads 720.css, 720.js, 720.animations.css, 720.animations.js
 # takes a long time to load cssanimations though...
 breakpoint7: { mq: '720px', lbd: 'both', tests: 'cssanimations' }
 
 # 'tests' def. WON'T work, test below goes false as expected on safari
-breakpoint7: { mq: '720px', lbd: 'none', test: 'indexeddb', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
 # loads 720.css, 720.cssanimations.css, 720.borderradius.css					
 breakpoint3: { mq: '720px', tests: 'cssanimations, borderradius' }
@@ -41,10 +41,10 @@ breakpoint3: { mq: '720px', tests: 'cssanimations && draganddrop, borderradius' 
 breakpoint4: { mq: '720px', js: 'cssanimations' }	
 
 # loads 720.cssanimations.js for devices w/ max-width of 720px					
-breakpoint5: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', mm: 'max' }]} 
+breakpoint5: { mq: '720px', lbd: 'none', js: [{ tests: 'cssanimations', mm: 'max' }]} //FAIL
 
 # loads snow.js w/ the default path
-breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }]}
+breakpoint6: { mq: '720px', lbd: 'none', js: [{ tests: 'cssanimations', yep: '{jsPath}snow.js' }]}
 
 # need a nope test
 breakpoint7: { mq: '720px', lbd: 'none', test: 'indexeddb', nope: '{jsPath}amazing.js'] }

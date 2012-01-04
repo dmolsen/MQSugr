@@ -16,9 +16,7 @@
 		<script type="text/javascript">
 			var mqsugr = new MQSugr();			
 			var breakpoints = { 
-													//breakpoint2: { mq: '720px', lbd: 'both' },
-													breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['{jsPath}snow.js]'], mboth: ['{jsPath}amazing.js'] }
-													//breakpoint6: { mq: '720px', lbd: 'none', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }]}
+													breakpoint7: { mq: '720px', lbd: 'both', complete: function() { console.log('finished loading stuff')} }
 												};
 			mqsugr.check(breakpoints);
 		</script>
