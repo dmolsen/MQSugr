@@ -18,7 +18,7 @@ function MQSugr(options) {
 	this.jsPath		= 'js/';
 	this.mm			= 'min';
 	this.mt			= 'screen';
-	this.lbd		= 'js';
+	this.lbd		= 'css';
 	
 	if (options) {
 		if (options.cssPath)
@@ -40,6 +40,7 @@ function MQSugr(options) {
 /**
 * Removes whitespace at the beginning and end of a string
 * @param  {String}   str    the string to be trimmed
+*
 * @return {String}          the trimmed string
 */
 MQSugr.prototype.trimStr = function(str) {
@@ -50,6 +51,7 @@ MQSugr.prototype.trimStr = function(str) {
 * Combines two objects overwriting properties as necessary
 * @param  {String}   obj1   main object, properties will be overwritten by obj2
 * @param  {String}   obj2   sub-object, its properties will overwrite obj1
+*
 * @return {Object}          the combined object
 */
 MQSugr.prototype.mergeOptions = function(obj1,obj2) {
@@ -63,6 +65,7 @@ MQSugr.prototype.mergeOptions = function(obj1,obj2) {
 * Sorts the final list of breakpoint tests so that JS is loaded before CSS. addresses a Modernizr.load issue.
 * @param  {Object}   a      first object to compare
 * @param  {Object}   b      second object to compare
+*
 * @return {Integer}         the combined object
 */
 MQSugr.prototype.sortByType = function(a,b) { 
@@ -76,6 +79,7 @@ MQSugr.prototype.sortByType = function(a,b) {
 * Lifted from jQuery
 * @param  {Object}   needle   the item being looked for in haystack
 * @param  {Object}   haystack array containing the elements
+*
 * @return {Boolean}           the answer
 */
 MQSugr.prototype.inArray = function(needle, haystack) {
@@ -87,12 +91,42 @@ MQSugr.prototype.inArray = function(needle, haystack) {
 }
 
 /**
+* Clone an object. Taken from: http://stackoverflow.com/a/728694
+* @param  {Object}   obj      the object to be cloned
+* @param  {Object}            the clonded object
+*/
+MQSugr.prototype.clone = function(obj) {
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Array
+    if (obj instanceof Array) {
+        var copy = [];
+		var i = 0;
+        for (var len = obj.length; i < len; ++i) {
+            copy[i] = this.clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = this.clone(obj[attr]);
+        }
+        return copy;
+    }
+}
+
+/**
 * Creates the yep:, nope:, or both: file path property for the Modernizr.load test
 * @param  {String}   yepnope   the yep:, nope:, or both: properties if available
 * @param  {String}   mq        media query to be used for the name of a default file
 * @param  {String}   fileTest  name of the test to be used for the name of a default file
 * @param  {String}   filePath  the location of js or css files
 * @param  {String}   type      the type of file to be loaded, css or js
+*
 * @return {String}             the final path for the file
 */
 MQSugr.prototype.createYepNopePath = function(yepnope,mq,fileTest,filePath,type) {
@@ -107,26 +141,40 @@ MQSugr.prototype.createYepNopePath = function(yepnope,mq,fileTest,filePath,type)
 }
 
 /**
-* Breaks apart standard :yep, :nope, & :both requests so we can properly organize JS vs CSS files
-* @param  {Object}   _options     the overall options for this test
-* @param  {Object}   _MLoadArray  the array we'll end up sending to Modernizr.load, just keep appending
-* @return {Object}                the updated array
+* Breaks apart standard yep:, nope:, & both: requests so we can properly organize JS vs CSS files
+* @param  {Object}   ynbOptions   the overall options for this test
+*
+* @return {Array}                the updated array
 */
-MQSugr.prototype.breakUpYepNope = function(ynbOptions,ynbFiles,ynbType,_MLoadObject) {
-	ynbOptions._lbd = 'none';
-	if (typeof ynbFiles == 'string') {
-		_MLoadObject.push(this.createMTestObject(ynbFiles));
-	} else {
-		for (path in ynbFiles) {
-			ynbOptions[ynbType] = ynbFiles[path];
-			ynbOptions.ft = (ynbFiles[path].match(/js$/)) ? 'js' : 'css';
-			_MLoadObject.push(this.createMTestObject(ynbOptions));
+MQSugr.prototype.breakUpYepNope = function(ynbOptions) {
+	var MLoadObject = [];
+	var ynbTypes = ['yep','nope','mboth'];
+	for (ynbType in ynbTypes) {
+		if (ynbOptions[ynbTypes[ynbType]]) {
+			var ynbFiles = ynbOptions[ynbTypes[ynbType]];
+			var _ynbOptions = this.clone(ynbOptions);
+			_ynbOptions._lbd = 'none';
+			for (_ynbType in ynbTypes) {
+				if (ynbTypes[ynbType].toString() != ynbTypes[_ynbType].toString()) {
+					if (_ynbOptions[ynbTypes[_ynbType]])
+						delete _ynbOptions[ynbTypes[_ynbType]];
+				}
+			}
+			if (typeof ynbFiles == 'string') {
+				_ynbOptions.ft = (ynbFiles.match(/js$/)) ? 'js' : 'css';
+				MLoadObject = MLoadObject.concat(this.breakUpTests(_ynbOptions, _ynbOptions.tests));	
+			} else {
+				for (path in ynbFiles) {
+					_ynbOptions[ynbTypes[ynbType]] = ynbFiles[path];
+					_ynbOptions.ft = (ynbFiles[path].match(/js$/)) ? 'js' : 'css';
+					MLoadObject = MLoadObject.concat(this.breakUpTests(_ynbOptions, _ynbOptions.tests));
+				}
+			}
+			_ynbOptions._lbd = '';
 		}
 	}
-	ynbOptions._lbd = '';
-	return _MLoadObject;
+	return MLoadObject;
 }
-
 
 /**
 * Creates a full object for Modernizr.load for one test of a particular breakpoint
@@ -154,16 +202,17 @@ MQSugr.prototype.createMTestObject = function(options) {
 	var mq 			= options.mq;
 	var cssPath 	= (options.cssPath) ? options.cssPath : this.cssPath;
 	var jsPath 		= (options.jsPath) ? options.jsPath : this.jsPath;
-	var ft			= (options.ft) ? options.ft : 'js'; // i think this is unnecessary now...
+	var ft			= (options.ft) ? options.ft : 'css';
 	var mm 			= (options.mm) ? options.mm : this.mm;
 	var mt 			= (options.mt) ? options.mt : this.mt;
 	var fileTest	= (options.test) ? '.'+options.test.replace(/\ \|\|\ /,'-').replace(/\ \&\&\ /,'-') : ''; // replace ' || ' & ' && ' w/ '-' in the test string
-
+	var filePath    = (ft == 'js') ? jsPath : cssPath;
+	
 	var MTestObject = {};
 	
 	// tests - combine the media query test w/ other feature tests if necessary
 	MTestObject.test = Modernizr.mq('only '+mt+' and ('+mm+'-width: '+mq+')');
-	if (options.test) {
+	if (options.test && (options.test != '')) {
 		multiAnd = options.test.split(' && ');
 		multiOr  = options.test.split(' || ');
 		if (multiAnd.length != 1) {
@@ -184,43 +233,20 @@ MQSugr.prototype.createMTestObject = function(options) {
 		MTestObject.test = MTestObject.test && Modernizr.mq('only '+mt+' and (-webkit-min-device-pixel-ratio: 1.5), only '+mt+' and (-o-min-device-pixel-ratio: 3/2), only '+mt+' and (min-device-pixel-ratio: 1.5)');
 	}
 	
-	console.debug(options);
-	// yep - create the list of files to load, if the default files aren't being loaded still check for the yep: feature
-	// '_lbd = none' tells us we came from a breakUpYepNope(), yes, it feels hack-ish but i'm getting tired of this
-	if (options._lbd == 'none') {
-		var filePath    = (ft == 'js') ? jsPath : cssPath; 
-		MTestObject.yep = this.createYepNopePath(options.yep,mq,fileTest,filePath,ft);
-	} else if (ft == 'js') {
-		MTestObject.yep = this.createYepNopePath(false,mq,fileTest,jsPath,'js');
-	} else {
-		MTestObject.yep = this.createYepNopePath(false,mq,fileTest,cssPath,'css');
-	}
-	
-	// nope - create the list of files to load, if the default files aren't being loaded still check for the nope: feature
-	if (options.nope) {
-		if (options._lbd == 'none') {
-			var filePath     = (ft == 'js') ? jsPath : cssPath;
-			MTestObject.nope = this.createYepNopePath(options.nope,mq,fileTest,filePath,ft);
-		} else if (ft == 'js') {
-			MTestObject.nope = this.createYepNopePath(false,mq,fileTest,jsPath,'js');
-		} else {
-			MTestObject.nope = this.createYepNopePath(false,mq,fileTest,cssPath,'css');
+	// add yep: to the test and nope: or both: if necessary
+	if (options.yep || options.nope || options.mboth) {
+		var ynTypes = ['yep','nope','mboth'];
+		for (ynType in ynTypes) {
+			var _ynType = (ynTypes[ynType] == 'mboth') ? 'both' : ynTypes[ynType];
+			if (options[ynTypes[ynType]]) {
+				MTestObject[_ynType] = this.createYepNopePath(options[ynTypes[ynType]],mq,fileTest,filePath,ft);			
+			}
 		}
+	} else {
+		MTestObject['yep'] = this.createYepNopePath(false,mq,fileTest,filePath,ft);
 	}
 
-	// both - create the list of files to load, if the default files aren't being loaded still check for the both: feature
-	if (options.mboth) {
-		if (options._lbd == 'none') {
-			var filePath     = (ft == 'js') ? jsPath : cssPath;
-			MTestObject.nope = this.createYepNopePath(options.nope,mq,fileTest,filePath,ft);
-		} else if (ft == 'js') {
-			MTestObject.both = this.createYepNopePath(false,mq,fileTest,jsPath,'js');
-		} else {
-			MTestObject.both = this.createYepNopePath(false,mq,fileTest,cssPath,'css');
-		}
-	}
-	
-	// callback - after loading a file make sure we support the modernizr.load 'callback' feature, also make sure that the function selected only loads once
+	// callback - after loading a file make sure we support callback:, also make sure that the function selected only loads once
 	if (options.callback) {
 		if (!this.inArray(options.callback.toString(),this.trackCallback)) {
 			MTestObject.callback = options.callback;
@@ -243,6 +269,32 @@ MQSugr.prototype.createMTestObject = function(options) {
 }
 
 /**
+* Check to see if the test string holds more than one test. loop through as appropriate
+* @param  {Object}   options      an object that includes all of the options provided for this breakpoint test
+* @param  {String}   testsString  the string that contains the test
+*
+* @return {Object}                the full Modernizr.load object
+*/
+MQSugr.prototype.breakUpTests = function(options, testsString) {
+	var MLoadObject = [];
+	if (!testsString)
+		testsString = ''; // coming from the yepnope stuff the string might be undefined, complete hack but i'm really tired of this
+	var tests = testsString.split(',');
+	if (tests.length != 1) {
+		for (test in tests) {
+			var testOptions = this.clone(options);
+			testOptions.test = this.trimStr(tests[test]);
+			MLoadObject.push(this.createMTestObject(testOptions));
+		}
+	} else {
+		var testOptions = this.clone(options);
+		testOptions.test = testsString;
+		MLoadObject.push(this.createMTestObject(testOptions));
+	}
+	return MLoadObject;
+}
+
+/**
 * Loops through any sub-options (e.g. js:) and uses their options (if available) to override the default options
 * @param  options           an object that includes all of the options provided for this breakpoint test
 * @param  subOptions        an object that includes select options provided for the suboption
@@ -252,20 +304,15 @@ MQSugr.prototype.createMTestObject = function(options) {
 MQSugr.prototype.createMTestObjects = function(options, subOptions) {
 	var MLoadObject = [];
 	if (typeof subOptions == "string") {
-		tests = subOptions.split(',');
-		if (tests.length != 1) {
-			for (test in tests) {
-				options.test = this.trimStr(tests[test]);
-				MLoadObject.push(this.createMTestObject(options));
-			}
-		} else {
-			options.test = subOptions;
-			MLoadObject.push(this.createMTestObject(options));
-		}
+		MLoadObject = MLoadObject.concat(this.breakUpTests(options, subOptions));
 	} else {
-		for (test in subOptions) {
-			var _options = this.mergeOptions(options,subOptions[test]); // override the main options w/ the ones from the sub-object
-			MLoadObject.push(this.createMTestObject(_options));
+		for (subOption in subOptions) {
+			var _options = this.mergeOptions(options,subOptions[subOption]); // override the main options w/ the ones from the sub-object
+			if (_options.yep || _options.nope || _options.mboth) {
+				MLoadObject = MLoadObject.concat(this.breakUpYepNope(_options));
+			} else {
+				MLoadObject = MLoadObject.concat(this.breakUpTests(_options, _options.tests));
+			}
 		}
 	}
 	return MLoadObject;
@@ -292,73 +339,63 @@ MQSugr.prototype.createMLoadObject = function(options) {
 		
 		var MLoadObject = [];
 		
-		// lbd - see which files should be loaded for the provided mq
-		if (lbd == 'both') {
-			options.ft = 'css';
-				MLoadObject.push(this.createMTestObject(options));
-			options.ft = 'js';
-				MLoadObject.push(this.createMTestObject(options));
-		} else if (lbd == 'css') {
-			options.ft = 'css';
-				MLoadObject.push(this.createMTestObject(options));
-		} else if (lbd == 'none') {
-			// don't do anything
+		if (options.yep || options.nope || options.mboth) {
+			MLoadObject = MLoadObject.concat(this.breakUpYepNope(options));
 		} else {
-			options.ft = 'js';
-				MLoadObject.push(this.createMTestObject(options));
-		}
-		
-		// tests - see which files should be loaded for the provided mq & tests
-		if (options.tests) {
+			
+			// css - see which files should be loaded for the provided type
+			if (options.css) {
+				options.ft = 'css';
+					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.css));
+			}
+
+			// js - see which files should be loaded for the provided type
+			if (options.js) {
+				options.ft = 'js';
+					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.js));
+			}
+
+			// both - see which files should be loaded for the provided type
+			if (options.both) {
+				options.ft = 'css';
+					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.both));
+				options.ft = 'js';
+					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.both));
+			}
+			
+			// tests - see which files should be loaded for the provided mq & tests
+			if (options.tests) {
+				if (lbd == 'both') {
+					options.ft = 'css';
+						MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+					options.ft = 'js';
+						MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+				} else if (lbd == 'css') {
+					options.ft = 'css';
+						MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+				} else if (lbd == 'none') {
+					// don't do anything, no idea why you'd provide tests and go none
+				} else {
+					options.ft = 'js';
+						MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+				}
+			}
+			
+			// lbd - see which files should be loaded for the provided mq
 			if (lbd == 'both') {
 				options.ft = 'css';
-					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+					MLoadObject.push(this.createMTestObject(options));
 				options.ft = 'js';
-					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+					MLoadObject.push(this.createMTestObject(options));
 			} else if (lbd == 'css') {
 				options.ft = 'css';
-					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+					MLoadObject.push(this.createMTestObject(options));
 			} else if (lbd == 'none') {
-				// don't do anything, no idea why you'd provide tests and go none
+				// don't do anything
 			} else {
 				options.ft = 'js';
-					MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.tests));
+					MLoadObject.push(this.createMTestObject(options));
 			}
-		}
-		
-		// css - see which files should be loaded for the provided type
-		if (options.css) {
-			options.ft = 'css';
-				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.css));
-		}
-		
-		// js - see which files should be loaded for the provided type
-		if (options.js) {
-			options.ft = 'js';
-				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.js));
-		}
-
-		// both - see which files should be loaded for the provided type
-		if (options.both) {
-			options.ft = 'css';
-				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.both));
-			options.ft = 'js';
-				MLoadObject = MLoadObject.concat(this.createMTestObjects(options, options.both));
-		}
-		
-		// yep - create tests for each file in a default yep: statement
-		if (options.yep) {
-			MLoadObject = this.breakUpYepNope(options,options.yep,'yep',MLoadObject);
-		}
-		
-		// nope - create tests for each file in a default nope: statement
-		if (options.nope) {
-			MLoadObject = this.breakUpYepNope(options,options.nope,'nope',MLoadObject);
-		}
-		
-		// mboth - create tests for each file in a default both: statement
-		if (options.mboth) {
-			MLoadObject = this.breakUpYepNope(options,options.mboth,'mboth',MLoadObject);
 		}
 		
 	}
