@@ -1,9 +1,7 @@
 # MQSugr #
 
-MQSugr is a wrapper for [Modernizr.load](http://www.modernizr.com/docs/#load) that provides some syntactic sugar focused on loading CSS and JavaScript files using media queries
-and browser features. It uses a file naming convention to help make it easier to view files in a filesystem and know which breakpoint & 
-feature they're related to. You're not required to follow the naming convention to use MQSugr. MQSugr was developed as a way for me to learn more
-about JavaScript.
+MQSugr is a wrapper for [Modernizr.load](http://www.modernizr.com/docs/#load) that provides some syntactic sugar for loading CSS and JavaScript files using media queries
+and browser features. MQSugr was developed as a way for me to learn more about JavaScript.
 
 ## Sugar Isn't Always Good for You ##
 
@@ -11,9 +9,9 @@ about JavaScript.
 learn more about Modernizr, media queries, file loading and JavaScript. Some reasons why this little project
 might not be a good fit for you:
 
-* at **5K minified** it's very heavy for something that is probably easier to type out by hand or not even worry about.
+* at **5K minified** it's very heavy for something that is probably easier to type out by hand or that you might not even have worry about.
 * it's a _brittle_ solution because I may or may not keep up with all the features of `Modernizr.load`. let's go under the assumption I won't.
-* if you use this to load CSS files you may experience FOUC. this is because JS gets loaded before CSS for performance reasons.
+* if you use this to load CSS files you _will_ experience FOUC. see the [demo](http://dmolsen.com/mqsugr/) for a good example of this in action. you can avoid this by using a base stylesheet & then using `max-width`.
 * rather than load one minified file or one stylesheet it will make multiple requests. when using the default `min-width` to test it shouldn't be bad for mobile devices. `max-width` tho...
 
 ## Features of MQSugr ##
@@ -28,6 +26,10 @@ List of features:
 * Media queries are continually tested as a user resizes their browser _larger_
 * Uses Modernizr to test media queries & browser features
 * Uses `Modernizr.load` to dynamically load files
+
+## Demo of MQSugr ##
+
+A very [simple demo of MQSugr](http://dmolsen.com/mqsugr/) is available.
 
 ## Using MQSugr ##
 
