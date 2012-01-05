@@ -144,7 +144,7 @@ MQSugr.prototype.clone = function(obj) {
 MQSugr.prototype.clean = function(array) {
 	_array = this.clone(array); // not sure this is really necessary
 	for (item in _array) {
-		if (_array[item].test) {
+		if (_array[item].test || ((_array[item].nope || _array[item].both) && (_array[item].test == false))) {
 			if (!this.inArray(_array[item].filePath,this.trackLoaded)) {
 				this.trackLoaded.push(_array[item].filePath);
 			} else {
@@ -249,15 +249,17 @@ MQSugr.prototype.createMTestObject = function(options) {
 	}
 
 	// callback - after loading a file make sure we support callback:, also make sure that the function selected only loads once
-	if (options.callback) {
+	// two tricks, the file will only load once & it'll only get added if the media query test passes
+	if (options.callback && Modernizr.mq('only '+mt+' and ('+mm+'-width: '+mq+')')) {
 		if (!this.inArray(options.callback.toString(),this.trackCallback)) {
 			MTestObject.callback = options.callback;
 			this.trackCallback.push(options.callback.toString());
 		}
 	}
 	
-	// complete - after loading a file make sure we support the modernizr.load 'complete' feature, also make sure that the function selected only loads once
-	if (options.complete) {
+	// complete - after loading a file make sure we support the modernizr.load 'complete' feature
+	// two tricks, the file will only load once & it'll only get added if the media query test passes
+	if (options.complete && Modernizr.mq('only '+mt+' and ('+mm+'-width: '+mq+')')) {
 		if (!this.inArray(options.complete.toString(),this.trackComplete)) {
 			MTestObject.complete = options.complete;
 			this.trackComplete.push(options.complete.toString());
