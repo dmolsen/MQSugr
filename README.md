@@ -1,6 +1,6 @@
 # MQSugr #
 
-MQSugr is a wrapper for `Modernizr.load` that provides some syntactic sugar focused on loading CSS and JavaScript files using media queries
+MQSugr is a wrapper for [Modernizr.load](http://www.modernizr.com/docs/#load) that provides some syntactic sugar focused on loading CSS and JavaScript files using media queries
 and browser features. It uses a file naming convention to help make it easier to view files in a filesystem and know which breakpoint & 
 feature they're related to. You're not required to follow the naming convention to use MQSugr. MQSugr was developed as a way for me to learn more
 about JavaScript.
@@ -14,6 +14,7 @@ might not be a good fit for you:
 * at **5K minified** it's very heavy for something that is probably easier to type out by hand or not even worry about.
 * it's a _brittle_ solution because I may or may not keep up with all the features of `Modernizr.load`. let's go under the assumption I won't.
 * if you use this to load CSS files you may experience FOUC. this is because JS gets loaded before CSS for performance reasons.
+* rather than load one minified file or one stylesheet it will make multiple requests. when using the default `min-width` to test it shouldn't be bad for mobile devices. `max-width` tho...
 
 ## Features of MQSugr ##
 
@@ -88,8 +89,8 @@ are more examples listed below.
 
 ### Creating Breakpoints ###
 
-Breakpoints and their related tests are the core of MQSugr. The following are examples of how you could use
-them to load specific files:
+Breakpoints and their related tests are the core of MQSugr. The names of the tests just match [those features detected by Modernizr](http://www.modernizr.com/docs/#s2). 
+I assume that if you use [custom tests](http://www.modernizr.com/docs/#addtest) they'll work. I haven't tried The following are examples of how you could use them to load specific files:
 
     // loads 720.css if min-width is 720px
     breakpoint: '720px' 
@@ -102,21 +103,24 @@ them to load specific files:
     breakpoint: { mq: '720px', tests: 'cssanimations' }
 		
     // loads 720.css, 720.cssanimations.js, 720.borderradius.js
-    // when separate by a comma each feature, cssanimations & borderradius, is tested individually w/ the media query
+    // when separated by a comma each feature, cssanimations & borderradius, is tested individually w/ the media query
     breakpoint: { mq: '720px', js: 'cssanimations,borderradius' }
 		
     // loads 720.js, 720.cssanimations-borderradius.js
     // both features must exist with the media query to be loaded, || also works. you can also add more tests with a comma
     breakpoint: { mq: '720px', js: 'cssanimations && borderradius' }
 		
-    // loads 720.cssanimations.js for devices w/ max-width of 720px					
-    breakpoint: { mq: '720px', lbd: 'none', js: [{ tests: 'cssanimations', mm: 'max' }]} 
+    // loads 720.cssanimations.js for devices w/ max-width of 720px	& 720.borderradius.js for devices w/ a min-width of 720px			
+    breakpoint: { mq: '720px', lbd: 'none', js: [{ tests: 'cssanimations', mm: 'max' },{ tests: 'borderradius', mm: 'min' }]} 
+
+In addition to `js:` you can use `css:` and `both:`. Again, all of the defaults from above can be included as well.
 
 ### Loading Files Across Breakpoints ###
 
 If you need to load files across multiple breakpoints just use `min-width` & `max-width` to load them
 across the appropriate breakpoints. For example, by default MQSugr uses `min-width` & we want the
-`720.cssanimations.js` file to load for an iPad in either portrait or landscape but have separate styles for landscape:
+`720.cssanimations.js` file to load for an iPad in either portrait or landscape but have separate styles for landscape. The breakpoint tests for that
+would look like:
 
     breakpoint1: { mq: '600px', js: 'cssanimations' },
     breakpoint2: '801px'
@@ -136,7 +140,8 @@ use the default paths that you set-up when you initialized MQSugr by using {cssP
     // loads snow.js w/ the default path if max-width is 720px and cssanimations are supported
     breakpoint: { mq: '720px', mm: 'max', js: [{ test: 'cssanimations', yep: '{jsPath}snow.js' }] }
 
-`nope:`, `both:` _(as mboth:)_, `callback:` & `complete:` are also supported.
+`nope:`, `both:` _(as mboth:)_, `callback:` & `complete:` are also supported. `load:` isn't currently supported but I can always add it
+or add a pull request with the fix.
 
 ### Suggested Breakpoints ###
 
@@ -158,3 +163,7 @@ provided by [@ryanve](http://stackoverflow.com/users/770127/ryanve) on [Stack Ov
     min-width: 961px  // tablet, landscape iPad, lo-res laptops ands desktops
     min-width: 1025px // big landscape tablets, laptops, and desktops
     min-width: 1281px // hi-res laptops and desktops
+
+## Thanks ##
+
+Thanks to the guys behind [Modernizr](http://www.modernizr.com/) (Faruk Ateş, Paul Irish, & Alan Sexton) and [YepNope](http://yepnopejs.com/) (Alan again & Ralph Holtzmann) for giving me some fun libraries to play with. 
