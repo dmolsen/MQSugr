@@ -1,0 +1,81 @@
+body { 
+	background-color: #000; 
+	color: #fff;
+	font-family: helvetica, sans serif;
+	font-size: 14px;
+}
+
+a, a:visited {
+	color: #fc0;
+}
+
+h1 {
+	position: relative;
+	text-align: center;
+	color: #fc0;
+}
+
+h2 { 
+	position: relative;
+	text-align: center;
+	color: #F7DD74;
+}
+
+.description {
+	width: 320px;
+	height: 100%;
+}
+
+.panel {
+	position: relative;
+	width: 90%;
+	color: #000;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.gist { 
+	font-size: 11px;
+	margin-top: 5px;
+}
+
+
+#container {
+	position: relative;
+	width: 320px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #737373;
+	padding: 15px;
+	-moz-box-shadow: 2px 2px 3px #333;
+	-webkit-box-shadow: 2px 2px 3px #333;
+	box-shadow: 2px 2px 3px #333;
+}
+
+#indexeddb, #true, #false { 
+	display: none; 
+}
+
+#panels {
+	width: 280px;
+	background-color: #F7DD74;
+	padding: 6px;
+	border: 0;
+	opacity: 0.6;
+	text-align: center;
+}
+
+#panels, #indexeddbtest {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#thecode_title, #thecode {
+	display: none;
+}
+
+#mq600, #mq800 { display: none; }
+
+#forkme {
+	display: none;
+}

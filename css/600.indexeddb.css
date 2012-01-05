@@ -1,0 +1,11 @@
+@media only screen and (min-width: 600px) {
+	#false {
+		display: none;
+	}
+	#true {
+		color: #fff;
+		text-align: center;
+		font-weight: bold;
+		display: block;
+	}
+}

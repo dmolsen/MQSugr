@@ -1,0 +1,68 @@
+@media only screen and (min-width: 600px) {
+	
+	body { 
+		background-color: #333;
+		font-size: 16px; 
+	}
+	
+	h1 {
+		text-shadow: 2px 2px 1px #333;
+	}
+	
+	#container, .description {
+		width: 600px;
+	}
+	
+	#thecode_title, #thecode {
+		display: block;
+	}
+	
+	#true, #false {
+		color: #fff;
+		position: relative;
+		width: 90%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	#indexeddbtest {
+		display: block;
+		padding: 6px;
+		border: 0;
+		opacity: 0.8;
+		text-align: center;
+		margin-top: 10px;
+	}
+	
+	#false {
+		color: #fff;
+		text-align: center;
+		font-weight: bold;
+		display: block;
+	}
+	
+	#yay {
+		color: #98B598;
+	}
+	
+	#boo {
+		color: #FF4A4A;
+	}
+	
+	#panels, #indexeddbtest {
+		width: 560px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	#mq600 { display: block; }
+	#mq320, #mq800 { display: none; }
+	
+	#forkme {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	
+}
