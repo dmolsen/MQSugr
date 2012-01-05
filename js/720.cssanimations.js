@@ -1,1 +1,0 @@
-console.log('720.cssanimations.js loaded');
