@@ -3,7 +3,7 @@
 		<title>MQSugr</title>
 
 		<script src="src/modernizr-2.0.6.wload.min.js"></script>
-		<script src="src/mqsugr.js"></script>
+		<script src="src/mqsugr.min.js"></script>
 	</head>
 
 	<body id="index">
@@ -16,7 +16,7 @@
 		<script type="text/javascript">
 			var mqsugr = new MQSugr();			
 			var breakpoints = { 
-													breakpoint7: { mq: '720px', lbd: 'both', complete: function() { console.log('finished loading stuff')} }
+													breakpoint: { mq: '720px', tests: 'cssanimations', js: 'borderradius' }
 												};
 			mqsugr.check(breakpoints);
 		</script>
