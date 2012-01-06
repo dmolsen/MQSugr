@@ -37,9 +37,11 @@ function MQSugr(options) {
 	this.trackCallback = []; // to keep track of callbacks someone may submit via callback:
 	this.trackLoaded   = []; // to keep track of tests that were loaded. for resize purposes.
 	
-	// make sure that if a user resizes the window the tests are run again. note: ONLY runs when someone makes the screen LARGER
+	// make sure that if a user resizes the window the tests are run again. also run on orientation change. 
+	// note: ONLY runs when someone makes the screen LARGER. could be changed to use this.mm as a switch.
 	this.startX = window.innerWidth;
-	window.onresize = function() { mqsugr.check(breakpoints) }; // make sure i
+	window.onresize = function() { mqsugr.check(breakpoints) };
+	window.onorientationchange = function() { mqsugr.check(breakpoints); }
 }
 
 /**
@@ -144,11 +146,14 @@ MQSugr.prototype.clone = function(obj) {
 MQSugr.prototype.clean = function(array) {
 	_array = this.clone(array); // not sure this is really necessary
 	for (item in _array) {
-		if (_array[item].test || ((_array[item].nope || _array[item].both) && (_array[item].test == false))) {
-			if (!this.inArray(_array[item].filePath,this.trackLoaded)) {
-				this.trackLoaded.push(_array[item].filePath);
-			} else {
-				_array[item].test = false; // force the test to false so Modernizr.load doesn't run it
+		types = [{ option: 'yep', result: true }, { option: 'nope', result: false }, { option: 'both', result: true }, { option: 'both', result: false} ];
+		for (type in types) {
+			if (_array[item][types[type].option] && (_array[item].test == types[type].result)) {
+				if (!this.inArray(_array[item].filePath,this.trackLoaded)) {
+					this.trackLoaded.push(_array[item].filePath);
+				} else {
+					delete _array[item][types[type].option]; // remove the yep: nope: or both: so modernizr doesn't load the file
+				}
 			}
 		}
 	}
