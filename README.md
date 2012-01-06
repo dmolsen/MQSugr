@@ -1,7 +1,7 @@
 # MQSugr #
 
 MQSugr is a wrapper for [Modernizr.load](http://www.modernizr.com/docs/#load) that provides some syntactic sugar for loading CSS and JavaScript files using media queries
-and browser features. MQSugr was created to help me learn more about JavaScript, media queries, file loading and Modernizr.
+and browser features. MQSugr was created to help me learn more about JavaScript, media queries, file loading and Modernizr. I don't think it solves any real problem.
 
 ## Sugar Isn't Always Good for You ##
 
