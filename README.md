@@ -1,31 +1,29 @@
 # MQSugr #
 
 MQSugr is a wrapper for [Modernizr.load](http://www.modernizr.com/docs/#load) that provides some syntactic sugar for loading CSS and JavaScript files using media queries
-and browser features. MQSugr was developed as a way for me to learn more about JavaScript.
+and browser features. MQSugr was created to help me learn more about JavaScript, media queries, file loading and Modernizr.
 
 ## Sugar Isn't Always Good for You ##
 
-`Modernizr.load` already does a good job of using media queries for loading files. MQSugr was created to help me
-learn more about Modernizr, media queries, file loading and JavaScript. Some reasons why this little project
+`Modernizr.load` already does a good job of using media queries for loading files.  Some reasons why this little project
 might not be a good fit for you:
 
-* at **5K minified** it's very heavy for something that is probably easier to type out by hand or that you might not even have worry about.
-* it's a _brittle_ solution because I may or may not keep up with all the features of `Modernizr.load`. let's go under the assumption I won't.
-* if you use this to load CSS files you _will_ experience FOUC. see the [demo](http://dmolsen.com/mqsugr/) for a good example of this in action. you can avoid this by using a base stylesheet & then using `max-width`.
+* at **5K minified** it's very heavy for something that is probably easier to type out by hand or that you might not even have worry about. compare the [MQSugr code](https://gist.github.com/1567142) that powers the demo vs. [Modernizr.load code](https://gist.github.com/1570854).
+* if you use this to load CSS files you _will_ experience FOUC. see the [demo](http://dmolsen.com/mqsugr/) for a good example of this in action. you probably should load base breakpoint CSS files with a `<link>` tag and the `media` attribute.
 * rather than load one minified file or one stylesheet it will make multiple requests. when using the default `min-width` to test it shouldn't be bad for mobile devices. `max-width` tho...
+* it's a _brittle_ solution because I may or may not keep up with all the features of `Modernizr.load`. let's go under the assumption I won't.
 
 ## Features of MQSugr ##
 
 List of features:
 
-* Load CSS & JavaScript files based on media queries & browser features
-* Simple format though the normal `Modernerizr.load` format can also be used
-* Standard file naming convention to help make it easier to organize files based on breakpoints
-* Loads JavaScript requests before CSS for performance reasons
-* Attempts to load CSS in order _(e.g. general media query CSS should be loaded before specific, test-related CSS)_
-* Media queries are continually tested as a user resizes their browser _larger_
-* Uses Modernizr to test media queries & browser features
-* Uses `Modernizr.load` to dynamically load files
+* Load CSS & JavaScript files based on media queries & browser features.
+* Simple format. The normal `Modernerizr.load` format can also be used.
+* Standard file naming convention to help make it easier to organize files based on breakpoints.
+* Attempts to load CSS in order _(e.g. general media query CSS should be loaded before specific, test-related CSS)_.
+* Media queries are continually tested as a user resizes their browser _larger_ or changes the orientation of their device.
+* Uses Modernizr to test media queries & browser features.
+* Uses `Modernizr.load` to dynamically load files.
 
 ## Demo of MQSugr ##
 
