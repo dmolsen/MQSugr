@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 	<head>
 		<title>MQSugr</title>
+		<meta name="viewport" content="width=device-width">
 		<link href="css/base.css" rel="stylesheet" type="text/css">
 		<script src="src/modernizr-2.0.6.wload.min.js"></script>
 		<script src="src/mqsugr.min.js"></script>
@@ -14,49 +15,54 @@
 			<div id="about" class="description">
 			  <p>
 					<a href="https://github.com/dmolsen/MQSugr">MQSugr</a> is a wrapper for <a href="http://www.modernizr.com/docs/#load">Modernizr.load</a> that provides some syntactic sugar for 
-					loading CSS and JavaScript files by using media queries and browser features. MQSugr was developed as a way for me to learn more about JavaScript.
+					loading CSS and JavaScript files when using media queries and browser features. MQSugr was developed to help me learn more about JavaScript, media queries, Modernizr, and file loading.
 				</p>
 			
 				<p>
-					In order to see MQSugr in action just resize your window and reload the page at different dimensions. The breakpoints are 320px, 600px and 801px. The background color 
+					In order to see MQSugr in action just resize your window and reload this page at different dimensions. The breakpoints are 320px, 600px and 801px. The background color 
 					should change and the simple tests below will react some. The snow will load if your screen is larger than 801px and your browser supports CSS animations.
 				</p>
 			</div>
-		
-
-			<h2>Features</h2>
-		
-			<div id="features" class="description">
-				<ul>
-					<li> Load CSS &amp; JavaScript files based on media queries &amp; browser features</li>
-					<li> Simple format though the normal Modernerizr.load format can also be used</li>
-					<li> Standard file naming convention to help make it easier to organize files based on breakpoints</li>
-					<li> Loads JavaScript requests before CSS for performance reasons</li>
-					<li> Attempts to load CSS in order <em>(e.g. general media query CSS should be loaded before specific, test-related CSS)</em></li>
-					<li> Media queries are continually tested as a user resizes their browser <em>larger</em></li>
-					<li> Uses Modernizr to test media queries &amp; browser features</li>
-					<li> Uses `Modernizr.load` to dynamically load files</li>
-				</ul>
-		  </div>
-		
+			
 			<h2>Simple Tests</h2>
-		
+
 			<div id="panels" class="description">
 				<div id="mq320" class="panel">This <code>&lt;div&gt;</code> is a little on the small side don't you think? If the window were bigger maybe we could lighten the background up some too...</div>
 				<div id="mq600" class="panel">Could this <code>&lt;div&gt;</code> get just a little more elbow room, please? With some more space something cool might happen.</div>
 				<div id="mq800" class="panel">This is how a <code>&lt;div&gt;</code> should live! Lots of space! And it's snowing!</div>
 			</div>
-		
+
 			<div id="indexeddbtest" class="description">
 				<div id="true">Your browser window is greater than 600px &amp; supports IndexedDB. <span id="yay">Yay!</span></div>
 				<div id="false">Your browser window is greater than 600px but doesn't support IndexedDB. <span id="boo">Boo!</span></div>
 			</div>
-	
+		
+			<h2>Features</h2>
+		
+			<div id="features" class="description">
+				<ul>
+					<li> Load CSS &amp; JavaScript files based on media queries &amp; browser features.</li>
+					<li> Simple format. The normal Modernerizr.load format can also be used.</li>
+					<li> Standard file naming convention to help make it easier to organize files based on breakpoints &amp; features.</li>
+					<li> Attempts to load CSS in order <em>(e.g. general media query CSS should be loaded before specific, test-related CSS).</em></li>
+					<li> Media queries are continually tested as a user resizes their browser <em>larger</em> or changes the orientation of their device.</li>
+					<li> Uses Modernizr to test media queries &amp; browser features.</li>
+					<li> Uses <code>Modernizr.load</code> to dynamically load files.</li>
+				</ul>
+		  </div>
+		
 			<h2 id="thecode_title">The Code</h2>
 		
 			<div id="thecode" class="description">
-				This example of MQSugr is the code that powers this page:
-				<script src="https://gist.github.com/1567142.js?file=gistfile1.js"></script>
+				<p>
+					This example of MQSugr is the code that powers this page:
+				  <script src="https://gist.github.com/1567142.js?file=gistfile1.js"></script>
+			  </p>
+				
+				<p>
+					This is what the code would look like when using Modernizr.load:
+					<script src="https://gist.github.com/1570854.js?file=gistfile1.js"></script>
+				</p>
 			</div>
 	
 			<h2>Learn More &amp; Download</h2>
@@ -86,7 +92,7 @@
 													breakpoint1: '320px',
 													breakpoint2: { mq: '600px', tests: 'indexeddb' },
 													breakpoint3: { mq: '801px', tests: 'cssanimations', yep: ['{cssPath}snowflakes.css', '{jsPath}snowflakes.js'], complete: oncomplete },
-													breakpoint4: '801px' // with the yep/nope for the prev test the default doesn't load & i didn't feel like breaking up the CSS & JS into sub-tests
+													breakpoint4: '801px'
 												};
 			mqsugr.check(breakpoints);
 		</script>
