@@ -12,6 +12,7 @@
 * @param options.mm         the default value for min-width vs max-width
 * @param options.mt         the default value for media type for the media queries (e.g. screen)
 * @param options.lbd        the default files that should be loaded (e.g. css, js, both, none)
+* @param options.debug      if this is a debug session for testing media query test combos
 */
 function MQSugr(options) {
 	this.cssPath    = 'css/';
@@ -19,6 +20,7 @@ function MQSugr(options) {
 	this.mm         = 'min';
 	this.mt         = 'screen';
 	this.lbd        = 'css';
+	this.debug      = false;
 	
 	if (options) {
 		if (options.cssPath)
@@ -31,6 +33,8 @@ function MQSugr(options) {
 			this.mt = options.mt;
 		if (options.lbd) 
 			this.lbd = options.lbd;
+		if (options.debug) 
+			this.debug = options.debug;
 	}
 	
 	this.trackComplete = []; // to keep track of functions someone may submit via complete:
@@ -460,9 +464,10 @@ MQSugr.prototype.check = function(MQbreakpoints) {
 		for (MQbreakpoint in MQbreakpoints) {
 			MQbreakpointArray = MQbreakpointArray.concat(this.createMLoadObject(MQbreakpoints[MQbreakpoint]));
 		}
-		MQbreakpointArray.sort(this.sortByName); // making sure the files are in order of specificity (hopefully)
-		MQbreakpointArray.sort(this.sortByType); // making sure the JS is loaded before the CSS
-		MQbreakpointArray = this.clean(MQbreakpointArray); // turn the test to false if the file has already been loaded
-		Modernizr.load(MQbreakpointArray);
+		MQbreakpointArray.sort(this.sortByName);            // making sure the files are in order of specificity (hopefully)
+		MQbreakpointArray.sort(this.sortByType);            // making sure the JS is loaded before the CSS
+		MQbreakpointArray = this.clean(MQbreakpointArray);  // turn the test to false if the file has already been loaded
+		if (this.debug) { console.log(MQbreakpointArray); } // if debugging throw out the objects to console
+		Modernizr.load(MQbreakpointArray);                  // finally throw the objects to Modernizr.load for loading
 	}	
 }
