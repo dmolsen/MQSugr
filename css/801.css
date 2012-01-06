@@ -4,10 +4,6 @@
 		background-color: #666; 
 	}
 	
-	h1 {
-		text-shadow: 2px 2px 1px #666;
-	}
-	
 	#panels, #indexeddbtest {
 		width: 760px;
 	}

@@ -5,8 +5,10 @@
 		font-size: 16px; 
 	}
 	
-	h1 {
-		text-shadow: 2px 2px 1px #333;
+	#container {
+		position: relative;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	
 	#container, .description {

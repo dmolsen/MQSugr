@@ -1,7 +1,12 @@
 @media only screen and (min-width: 320px) {
-	body {
-		background-color: #000; 
+	#container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin: 0;
+		border: 0;
 	}
+
 }
 
 
