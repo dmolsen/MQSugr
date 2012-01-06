@@ -3,56 +3,47 @@ with a real test suite.
 
 ### BUG with yep/no and using 'test' instead of 'tests'
 
-# loads 720.css
-breakpoint1: '720px'
+# loads 320.css
+breakpoint1: '320px'
 
-# loads 720.css, 720.js
-breakpoint2: { mq: '720px', lbd: 'both' }	
+# loads 320.css, 320.js
+breakpoint2: { mq: '320px', lbd: 'both' }	
 
 # shouldn't load anything
-breakpoint2: { mq: '720px', lbd: 'none' }
+breakpoint2: { mq: '320px', lbd: 'none' }
 
-# need to figure out what this test really does
-# do user supplied 'yeps' get file paths replaced no matter what?, should i also load 720.css?
-# currently fails hardcore
-breakpoint7: { mq: '720px', yep: ['css2/foo.css','{jsPath}amazing.js'] } //FAIL
+# loads 320.css, 320.cssanimations.js	
+breakpoint4: { mq: '320px', js: 'cssanimations' }
 
-# another test that fails hard core
-# breaks on the []s in the yep and uses the yep even though indexeddb should fail
-breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['{jsPath}snow.js]'], mboth: ['{jsPath}amazing.js'] }
+# loads 320.css, 320.js, 320.animations.css, 320.animations.js
+breakpoint7: { mq: '320px', lbd: 'both', tests: 'cssanimations' }
 
-# loads css2/foo.css and amazing.js w/ the default path
-breakpoint7: { mq: '720px', lbd: 'none', yep: ['css2/foo.css','{jsPath}amazing.js'] //FAIL
+# loads css2/foo.css & js/amazing.js
+breakpoint7: { mq: '320px', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
-# loads 720.css, 720.js, 720.animations.css, 720.animations.js
-# takes a long time to load cssanimations though...
-breakpoint7: { mq: '720px', lbd: 'both', tests: 'cssanimations' }
+# shouldn't load anything on safari
+breakpoint7: { mq: '320px', tests: 'indexeddb', yep: '{jsPath}snow.js' }
 
-# 'tests' def. WON'T work, test below goes false as expected on safari
-breakpoint7: { mq: '720px', lbd: 'none', tests: 'indexeddb', yep: ['css2/foo.css','{jsPath}amazing.js'] }
+# test below goes false as expected on safari
+breakpoint7: { mq: '320px', tests: 'indexeddb', yep: ['css2/foo.css','{jsPath}amazing.js'] }
 
-# loads 720.css, 720.cssanimations.css, 720.borderradius.css					
-breakpoint3: { mq: '720px', tests: 'cssanimations, borderradius' }
+# loads 320.css, 320.cssanimations.css, 320.borderradius.css					
+breakpoint3: { mq: '320px', tests: 'cssanimations, borderradius' }
 
-# loads 720.css, 720.cssanimations-draganddrop.css, 720.borderradius.css (???)
-breakpoint3: { mq: '720px', tests: 'cssanimations && draganddrop, borderradius' }		
+# loads 320.css, 320.cssanimations-draganddrop.css, 320.borderradius.css
+breakpoint3: { mq: '320px', tests: 'cssanimations && draganddrop, borderradius' }		
 
-# loads 720.css, 720.cssanimations.js	
-breakpoint4: { mq: '720px', js: 'cssanimations' }	
-
-# loads 720.cssanimations.js for devices w/ max-width of 720px					
-breakpoint5: { mq: '720px', lbd: 'none', js: [{ tests: 'cssanimations', mm: 'max' }]} //FAIL
+# loads 320.cssanimations.js for devices w/ max-width of 320px					
+breakpoint5: { mq: '320px', js: [{ tests: 'cssanimations', mm: 'max' }]}
 
 # loads snow.js w/ the default path
-breakpoint6: { mq: '720px', lbd: 'none', js: [{ tests: 'cssanimations', yep: '{jsPath}snow.js' }]}
+breakpoint6: { mq: '320px', js: [{ tests: 'cssanimations', yep: '{jsPath}snow.js' }]}
 
 # need a nope test
-breakpoint7: { mq: '720px', lbd: 'none', test: 'indexeddb', nope: '{jsPath}amazing.js'] }
+breakpoint7: { mq: '320px', tests: 'indexeddb', nope: '{jsPath}amazing.js' }
 
 # need an mboth test
-breakpoint7: { mq: '720px', lbd: 'none', test: 'indexeddb', yep: '[{jsPath}snow.js]', mboth: ['{jsPath}amazing.js'] }
+breakpoint7: { mq: '320px', tests: 'indexeddb', yep: '{jsPath}snow.js', mboth: '{jsPath}amazing.js' }
 
 # need a complete test
-breakpoint7: { mq: '720px', complete: function() { console.log('finished loading stuff')} }
-
-# check test vs tests
+breakpoint7: { mq: '320px', complete: function() { console.log('finished loading stuff')} }

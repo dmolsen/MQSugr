@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<script src="../src/modernizr-2.0.6.wload.min.js"></script>
+		<script src="../src/mqsugr.js"></script>
+	</head>
+	<body>
+		Tests. Look at console.
+	
+		<script type="text/javascript">
+			var mqsugr = new MQSugr( { debug: true } );
+			// swap out tests from tests.txt below
+			var breakpoints = { 
+													breakpoint7: { mq: '320px', complete: function() { console.log('finished loading stuff')} }
+												};
+			mqsugr.check(breakpoints);
+		</script>
+	</body>
+</html>
